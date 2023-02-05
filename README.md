@@ -1,6 +1,6 @@
 ## ARJ-Stack: AWS Cloud Development Kit (AWS CDK) - Setup
 
-A Terraform module for provisioning Certificate from ACM
+Practical Guide for setting up your workstation to work on Python based AWS CDK applications to provision AWS cloud Resources. 
 
 ### What is AWS CDK?
 - AWS Cloud Development Kit is a native framework designed by AWS for defining AWS Cloud Infrastructure as code in one of the support programming language and to provision it using AWS CloudFormation.
