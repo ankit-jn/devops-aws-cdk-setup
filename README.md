@@ -5,7 +5,7 @@
     - [Install AWS CLI](#install-aws-cli)
 	- [Configure Workstation with AWS Credentials and an AWS Region](#configure-workstation-with-aws-credentials-and-an-aws-region)
 	- [Install Python](#install-python)
-	- [Install pip and virtualenv](#install-pip-and-virtualenv)
+	- [Install Python Package Installer (pip) and Virtual Environment Manager (virtualenv)](#install-python-package-installer-pip-and-virtual-environment-manager-virtualenv)
 	- [Install NodeJS](#install-nodejs)
 	- [Install AWS CDK](#install-aws-cdk)
 	- [Bootstrapping](#bootstrapping)
@@ -125,7 +125,7 @@ Python 3.11.1
 D:\aws-cdk>
 ```
 
-#### Install pip and virtualenv
+#### Install Python Package Installer (pip) and Virtual Environment Manager (virtualenv)
 ---
 
 AWS CDK also requires pip and virtualenv to be installed. Run the following commands to get it done.
