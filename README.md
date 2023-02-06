@@ -385,6 +385,333 @@ cdk bootstrap aws://<AWS Account Number>/ap-south-1 ^
 --profile aws-cdk-setup
 ```
 
+### Test the CDK Setup
+
+#### App Initialization
+---
+
+At this moment, we can proceed building our first CDK project to test if our setup is working. Create a new directory named `aws-cdk-test` for the CDK Testing app. From within this directory, we need to run the cdk initialization using CDK project template `app`. Runt he following command: 
+
+- Note: (Skipping the detailed output lines of this command intentionally to keep the documentation short)
+
+```
+D:\aws-cdk-test>cdk init app aws-cdk-test --language python
+Applying project template app for python
+
+# Welcome to your CDK Python project!
+
+This is a blank project for CDK development with Python.
+
+The `cdk.json` file tells the CDK Toolkit how to execute your app.
+
+.....
+......
+........
+
+Please run 'python -m venv .venv'!
+Executing Creating virtualenv...
+✅ All done!
+```
+
+After running this command, you will observe that `cdk init` command has generated a number of files and folders inside the app directory `aws-cdk-test`.
+
+<br>Here is the screenshot of structure which is generated:
+
+<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/cdk-app-structure.jpg">
+
+#### Python Virual Environment Activation
+---
+
+After init process is done, we need to activate the virtualenv. Run the following command:
+
+```
+D:\aws-cdk-test>.venv\Scripts\activate.bat
+
+(.venv) D:\aws-cdk-test>
+```
+
+When you will run this command, you will notice that you are now inside python virtual environment. Its time for installing required dependencies so lets proceed with next step.
+
+#### Dependencies Installation
+---
+
+Wehn you initialized the CDK app through CDK template, it created a `requirement.txt` file for you and pre-populated it with required dependencies such as the base aws-cdk package that has some initial functionality.
+
+```
+aws-cdk-lib==2.63.2
+constructs>=10.0.0,<11.0.0
+```
+
+We can utilize this file to install these dependencies. Run the following command within your python virual environment:
+
+- You can also add more dependencies in this file as per your need.
+
+```
+(.venv) D:\aws-cdk-test>python -m pip install -r requirements.txt
+Collecting aws-cdk-lib==2.63.2
+  Downloading aws_cdk_lib-2.63.2-py3-none-any.whl (26.5 MB)
+     ---------------------------------------- 26.5/26.5 MB 4.7 MB/s eta 0:00:00
+Collecting constructs<11.0.0,>=10.0.0
+  Downloading constructs-10.1.242-py3-none-any.whl (57 kB)
+     ---------------------------------------- 57.8/57.8 kB 3.2 MB/s eta 0:00:00
+Collecting aws-cdk.asset-awscli-v1<3.0.0,>=2.2.52
+  Downloading aws_cdk.asset_awscli_v1-2.2.59-py3-none-any.whl (13.4 MB)
+     ------ --------------------------------- 2.1/13.4 MB 1.2 MB/s eta 0:00:10
+
+....
+......
+....
+
+Installing collected packages: publication, typing-extensions, typeguard, six, attrs, python-dateutil, cattrs, jsii, constructs, aws-cdk.asset-node-proxy-agent-v5, aws-cdk.asset-kubectl-v20, aws-cdk.asset-awscli-v1, aws-cdk-lib
+Successfully installed attrs-22.2.0 aws-cdk-lib-2.63.2 aws-cdk.asset-awscli-v1-2.2.59 aws-cdk.asset-kubectl-v20-2.1.1 aws-cdk.asset-node-proxy-agent-v5-2.0.48 cattrs-22.2.0 constructs-10.1.242 jsii-1.74.0 publication-0.0.3 python-dateutil-2.8.2 six-1.16.0 typeguard-2.13.3 typing-extensions-4.4.0
+
+[notice] A new release of pip available: 22.3.1 -> 23.0
+[notice] To update, run: python.exe -m pip install --upgrade pip
+```
+
+#### Verifying the Stacks
+---
+
+You can verify if the CDK app is structured correctly by running the follwoing command:
+
+```
+(.venv) D:\aws-cdk-test>cdk ls --profile aws-cdk-setup
+AwsCdkTestStack
+
+
+(.venv) D:\aws-cdk-test>
+```
+
+You see that we have received the Stack name: `AwsCdkTestStack`
+
+- We did not change anything about environment in `app.py` because we used the `--profile` option while we executed `cdk ls` command.
+
+#### Synthesize Stack 
+---
+
+Lets change the application by introducing SQS Queue resource and sythensize it to see the AWS CloudFormation template.
+<br>
+Replace the file `aws_cdk_test\aws_cdk_test_stack.py` with the following contents:
+
+```
+from aws_cdk import (
+    Duration,
+    Stack,
+    aws_sqs as sqs,
+)
+from constructs import Construct
+
+class AwsCdkTestStack(Stack):
+
+    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+        super().__init__(scope, construct_id, **kwargs)
+
+        # SQS resource
+        queue = sqs.Queue(
+            self, "AwsCdkTestQueue",
+            visibility_timeout=Duration.seconds(300),
+        )
+```
+
+Now run the following command, and you will see the generated CloudFormation template as mentioned below.
+
+- Note: This step is optional, `cdk deploy` step as mentioned the next, synthesizes your stack before each deployment.
+
+```
+(.venv) D:\aws-cdk-test>cdk synth --profile aws-cdk-setup
+Resources:
+  AwsCdkTestQueueFC7DA0D5:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 300
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: AwsCdkTestStack/AwsCdkTestQueue/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/yXIyQmAMBBA0Vq8JyNRsAEbcClAYow4LhN0EkTE3t1O//ETyFJIIr2zNN0kZ2zhrL02k3hWwyvDWQYbrMh7+nC9qiy7sJnv5o469OjoEsXhB0dxCkqBikZGlFsgj4uF6u8NHMH2kG8AAAA=
+    Metadata:
+      aws:cdk:path: AwsCdkTestStack/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - af-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2
+Parameters:
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+      - Assert:
+          Fn::Not:
+            - Fn::Contains:
+                - - "1"
+                  - "2"
+                  - "3"
+                  - "4"
+                  - "5"
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.
+
+
+
+(.venv) D:\aws-cdk-test>
+```
+
+#### Stack Deployment
+---
+
+We have already verified the configuration by sythensizing it so its time for deploying this stack which you can do by executing the following command:
+
+
+```
+(.venv) D:\aws-cdk-test>cdk deploy --profile aws-cdk-setup
+
+✨  Synthesis time: 21.19s
+
+AwsCdkTestStack: building assets...
+
+[0%] start: Building b2bc83281ea14b073656cdf59b6e4c003798365b664f3042a57baf482b955a03:current_account-current_region
+[100%] success: Built b2bc83281ea14b073656cdf59b6e4c003798365b664f3042a57baf482b955a03:current_account-current_region
+
+AwsCdkTestStack: assets built
+
+AwsCdkTestStack: deploying... [1/1]
+[0%] start: Publishing b2bc83281ea14b073656cdf59b6e4c003798365b664f3042a57baf482b955a03:current_account-current_region
+[100%] success: Published b2bc83281ea14b073656cdf59b6e4c003798365b664f3042a57baf482b955a03:current_account-current_region
+AwsCdkTestStack: creating CloudFormation changeset...
+AwsCdkTestStack | 0/3 | 8:28:34 AM | REVIEW_IN_PROGRESS   | AWS::CloudFormation::Stack | AwsCdkTestStack User Initiated
+AwsCdkTestStack | 0/3 | 8:28:40 AM | CREATE_IN_PROGRESS   | AWS::CloudFormation::Stack | AwsCdkTestStack User Initiated
+AwsCdkTestStack | 0/3 | 8:28:43 AM | CREATE_IN_PROGRESS   | AWS::SQS::Queue    | AwsCdkTestQueue (AwsCdkTestQueueFC7DA0D5)
+AwsCdkTestStack | 0/3 | 8:28:43 AM | CREATE_IN_PROGRESS   | AWS::CDK::Metadata | CDKMetadata/Default (CDKMetadata)
+AwsCdkTestStack | 0/3 | 8:28:44 AM | CREATE_IN_PROGRESS   | AWS::SQS::Queue    | AwsCdkTestQueue (AwsCdkTestQueueFC7DA0D5) Resource creation Initiated
+AwsCdkTestStack | 0/3 | 8:28:44 AM | CREATE_IN_PROGRESS   | AWS::CDK::Metadata | CDKMetadata/Default (CDKMetadata) Resource creation Initiated
+AwsCdkTestStack | 1/3 | 8:28:44 AM | CREATE_COMPLETE      | AWS::CDK::Metadata | CDKMetadata/Default (CDKMetadata)
+1/3 Currently in progress: AwsCdkTestStack, AwsCdkTestQueueFC7DA0D5
+AwsCdkTestStack | 2/3 | 8:29:55 AM | CREATE_COMPLETE      | AWS::SQS::Queue    | AwsCdkTestQueue (AwsCdkTestQueueFC7DA0D5)
+AwsCdkTestStack | 3/3 | 8:29:56 AM | CREATE_COMPLETE      | AWS::CloudFormation::Stack | AwsCdkTestStack
+
+ ✅  AwsCdkTestStack
+
+✨  Deployment time: 87.01s
+
+Stack ARN:
+arn:aws:cloudformation:ap-south-1:<AWS Account Number>:stack/AwsCdkTestStack/25053af0-a5ca-11ed-b993-06ca1beddde6
+
+✨  Total time: 108.2s
+
+
+
+(.venv) D:\aws-cdk-test>
+```
+
+If you analyse the output as mentioned in the above highlights, you see it has performed 2 steps:
+1. Synthesis which took 21.19 seconds
+2. Deployment which took 87.01 seconds
+
+High Level Outcomes which got reflected behind the scene:
+
+1. The above command first created the CloudFormation Temaplte and stored it in CDK ToolKit - S3 bucket which we created in one of the setup steps mentioned above.
+
+<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/cdk-outcome-template-in-s3-bucket.jpg">
+
+2. It created a CloudFormation Stack named `AwsCdkTestStack`
+
+<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/cdk-outcome-cfn-stack.jpg">
+
+3. The Deployment of the CFN stack `AwsCdkTestStack` resulted into SQS Queue named `AwsCdkTestStack-AwsCdkTestQueueFC7DA0D5-FtrMrgQCMGwI`
+
+<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/cdk-outcome-sqs.jpg">
+
+#### Stack Deletion
+---
+
+Once our testing is done, we can destroy our CDK stack by running the following command:
+
+```
+(.venv) D:\aws-cdk-test>cdk destroy --profile aws-cdk-setup
+Are you sure you want to delete: AwsCdkTestStack (y/n)? y
+AwsCdkTestStack: destroying... [1/1]
+
+ ✅  AwsCdkTestStack: destroyed
+
+
+(.venv) D:\aws-cdk-test>
+```
+
 ### Authors
 
 Module is maintained by [Ankit Jain](https://github.com/ankit-jn) with help from [these professional](https://github.com/arjstack/devops-aws-cdk-setup/graphs/contributors).
