@@ -52,11 +52,11 @@ msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
 
 It will popup the installation instruction dialog as mentioned below. Follow the instruction to get it done.
 
-<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/aws-cli2-installation-started.jpg">
+<img src="https://github.com/ankit-jn/devops-aws-cdk-setup/blob/main/screenshots/aws-cli2-installation-started.jpg">
 
 One the installation is completed. you will see the folllowing message in the dialog window.
 
-<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/aws-cli2-installation-completed.jpg">
+<img src="https://github.com/ankit-jn/devops-aws-cdk-setup/blob/main/screenshots/aws-cli2-installation-completed.jpg">
 
 To confirm the installation. Open a new command prompt window and run the command `python --version`. You will get the output as mentioned below:
 
@@ -114,7 +114,7 @@ start /i python-3.11.1-amd64.exe
 
 It will popup the installation instruction dialog as mentioned below. Follow the instruction to get it done.
 
-<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/python-installation.jpg">
+<img src="https://github.com/ankit-jn/devops-aws-cdk-setup/blob/main/screenshots/python-installation.jpg">
 
 To confirm the installation. Open a new command prompt window and run the command `aws --version`. You will get the output as mentioned below:
 
@@ -189,11 +189,11 @@ msiexec.exe /i ./node-v19.6.0-x64.msi
 
 It will popup the installation instruction dialog as mentioned below. Follow the instruction to get it done.
 
-<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/node-installation-started.jpg">
+<img src="https://github.com/ankit-jn/devops-aws-cdk-setup/blob/main/screenshots/node-installation-started.jpg">
 
 One the installation is completed. you will see the folllowing message in the dialog window.
 
-<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/node-installation-completed.jpg">
+<img src="https://github.com/ankit-jn/devops-aws-cdk-setup/blob/main/screenshots/node-installation-completed.jpg">
 
 To confirm the installation. Open a new command prompt window and run the command `node --version` and `npm --version`. You will get the output as mentioned below:
 
@@ -438,7 +438,7 @@ After running this command, you will observe that `cdk init` command has generat
 
 <br>Here is the screenshot of structure which is generated:
 
-<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/cdk-app-structure.jpg">
+<img src="https://github.com/ankit-jn/devops-aws-cdk-setup/blob/main/screenshots/cdk-app-structure.jpg">
 
 #### Python Virual Environment Activation
 ---
@@ -707,15 +707,15 @@ High Level Outcomes which got reflected behind the scene:
 
 1. The above command first created the CloudFormation Temaplte and stored it in CDK ToolKit - S3 bucket which we created in one of the setup steps mentioned above.
 
-<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/cdk-outcome-template-in-s3-bucket.jpg">
+<img src="https://github.com/ankit-jn/devops-aws-cdk-setup/blob/main/screenshots/cdk-outcome-template-in-s3-bucket.jpg">
 
 2. It created a CloudFormation Stack named `AwsCdkTestStack`
 
-<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/cdk-outcome-cfn-stack.jpg">
+<img src="https://github.com/ankit-jn/devops-aws-cdk-setup/blob/main/screenshots/cdk-outcome-cfn-stack.jpg">
 
 3. The Deployment of the CFN stack `AwsCdkTestStack` resulted into SQS Queue named `AwsCdkTestStack-AwsCdkTestQueueFC7DA0D5-FtrMrgQCMGwI`
 
-<img src="https://github.com/arjstack/devops-aws-cdk-setup/blob/main/screenshots/cdk-outcome-sqs.jpg">
+<img src="https://github.com/ankit-jn/devops-aws-cdk-setup/blob/main/screenshots/cdk-outcome-sqs.jpg">
 
 #### Stack Deletion
 ---
@@ -735,4 +735,4 @@ AwsCdkTestStack: destroying... [1/1]
 
 ### Authors
 
-Module is maintained by [Ankit Jain](https://github.com/ankit-jn) with help from [these professional](https://github.com/arjstack/devops-aws-cdk-setup/graphs/contributors).
+Module is maintained by [Ankit Jain](https://github.com/ankit-jn) with help from [these professional](https://github.com/ankit-jn/devops-aws-cdk-setup/graphs/contributors).
